@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
+import { QueryClientComponent } from "@/components/queryclient/QueryClientComponent";
+import AuthTokenUpdater from "@/components/auth/TokenUpdater";
+import AuthComponent from "@/components/auth/AuthComponent";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "./globals.css";
 
@@ -39,13 +43,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en" suppressHydrationWarning>
+      <AuthComponent>
       <body className={GeistSans.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <QueryClientComponent>
           {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientComponent>
         </ThemeProvider>
+        {/* <AuthTokenUpdater /> */}
       </body>
+      </AuthComponent>
     </html>
   );
 }
