@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PanelsTopLeft } from "lucide-react";
+import { PanelsTopLeft, TrophyIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useStore } from "@/hooks/use-store";
@@ -30,8 +30,8 @@ export function Sidebar() {
           variant="link"
           asChild
         >
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <PanelsTopLeft className="w-6 h-6 mr-1" />
+          <Link href="/" className="flex items-center gap-2">
+            <TrophyIcon className="w-6 h-6 mr-1" />
             <h1
               className={cn(
                 "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
@@ -40,7 +40,8 @@ export function Sidebar() {
                   : "translate-x-0 opacity-100"
               )}
             >
-              Brand
+              
+              FPL Rewards
             </h1>
           </Link>
         </Button>

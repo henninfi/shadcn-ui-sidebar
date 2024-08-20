@@ -54,7 +54,7 @@ export default function RootLayout({
           <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientComponent>
         </ThemeProvider>
-        {/* <AuthTokenUpdater /> */}
+        <AuthTokenUpdater />
       </body>
       </AuthComponent>
     </html>

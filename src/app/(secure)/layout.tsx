@@ -8,9 +8,9 @@ export default function DemoLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
+  return <RequiredAuthProvider authUrl={process.env.NEXT_PUBLIC_AUTH_URL as string}>
     <AdminPanelLayout>
       {children}
     </AdminPanelLayout>
-  )
+  </RequiredAuthProvider>;
 }

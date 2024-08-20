@@ -12,10 +12,14 @@ import {
 } from "@/components/ui/breadcrumb";
 import {FantasyTable} from "@/components/ui/tables/currentStandingTable";
 
+
 export default function DashboardPage() {
+
+
+  
   return (
-    <ContentLayout title="Dashboard">
-      <Breadcrumb>
+    <ContentLayout title="My League">
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
@@ -27,9 +31,8 @@ export default function DashboardPage() {
             <BreadcrumbPage>Dashboard</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <FantasyTable />
-      <PlaceholderContent />
     </ContentLayout>
   );
 }
