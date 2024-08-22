@@ -1,5 +1,11 @@
 "use client";
 import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardTitle
+} from "@/components/ui/card";
+import {
   Table,
   TableBody,
   TableCaption,
@@ -11,15 +17,16 @@ import {
 } from "@/components/ui/table";
 import { useGetClassicLeagueStandings } from "@/hooks/useGetClassicLeagueStanding";
 import { useGetGameweekPerManagerPerClassicLeague } from "@/hooks/useGetGameweekPerManager";
-import { useGetLeagueId } from "@/hooks/useGetLeagueId";
+import { useGetFPLLeagueId } from "@/hooks/useGetLeagueId";
 import { Standings, TeamData } from "../../../../SDK/projects_api/client";
 import { useGetGameweekOverallInfo } from "@/hooks/useGetGameweekOverallInfo";
 import { Event } from "../../../../SDK/projects_api/client";
 
+
 export function FantasyTable() {
-  const leagueId = useGetLeagueId();
+  const fplLeagueId = useGetFPLLeagueId();
   const { data: fplGameweekOverallInfo } = useGetGameweekOverallInfo();
-  const { data: fplClassicLeagueStanding } = useGetClassicLeagueStandings(leagueId);
+  const { data: fplClassicLeagueStanding } = useGetClassicLeagueStandings(fplLeagueId);
 
   const lastEventId =
     fplGameweekOverallInfo && fplGameweekOverallInfo.length > 0
@@ -27,7 +34,7 @@ export function FantasyTable() {
       : 1;
 
   const { data: fplGameweekPerManagerData } =
-    useGetGameweekPerManagerPerClassicLeague(leagueId, lastEventId.toString());
+    useGetGameweekPerManagerPerClassicLeague(fplLeagueId, lastEventId.toString());
 
   const getGameweeksWonAndPrize = (standings: Standings) => {
     const rankPrizeMap: { [key: number]: number } = {
@@ -111,76 +118,77 @@ export function FantasyTable() {
     : [];
 
   return (
-    <Table>
-      <TableCaption>
-        A list of Fantasy Premier League players and their performance.
-      </TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Rank</TableHead>
-          <TableHead className="w-[200px]">Team Name</TableHead>
-          <TableHead>Player</TableHead>
-          <TableHead>Total Points</TableHead>
-          <TableHead>Points on Bench</TableHead>
-          <TableHead>Gameweeks Won</TableHead>
-          <TableHead className="text-right">Team Value</TableHead>
-          <TableHead className="text-right">Bank</TableHead>
-          <TableHead className="text-right">Total Budget</TableHead>
-          <TableHead className="text-right">Transfer Hits</TableHead>
-          <TableHead className="text-right">Gameweek Prize</TableHead>
-          <TableHead className="text-right">Rank Prize</TableHead>
-          <TableHead className="text-right">Total Prize</TableHead>
-          <TableHead className="text-right sm:hidden">Player</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {standingsWithGameweeksWon.map((team, index) => {
-          const managerData: TeamData | undefined = fplGameweekPerManagerData
-            ? fplGameweekPerManagerData[team.entry.toString()]
-            : undefined;
+          <Table>
+            <TableCaption>
+              A list of Fantasy Premier League players and their performance.
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Rank</TableHead>
+                <TableHead className="w-[200px]">Team Name</TableHead>
+                <TableHead>Player</TableHead>
+                <TableHead>Total Points</TableHead>
+                <TableHead>Points on Bench</TableHead>
+                <TableHead>Gameweeks Won</TableHead>
+                <TableHead className="text-right">Team Value</TableHead>
+                <TableHead className="text-right">Bank</TableHead>
+                <TableHead className="text-right">Total Budget</TableHead>
+                <TableHead className="text-right">Transfer Hits</TableHead>
+                <TableHead className="text-right">Gameweek Prize</TableHead>
+                <TableHead className="text-right">Rank Prize</TableHead>
+                <TableHead className="text-right">Total Prize</TableHead>
+                <TableHead className="text-right sm:hidden">Player</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {standingsWithGameweeksWon.map((team, index) => {
+                const managerData: TeamData | undefined = fplGameweekPerManagerData
+                  ? fplGameweekPerManagerData[team.entry.toString()]
+                  : undefined;
 
-          return (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{team.rank}</TableCell>
-              <TableCell className="font-medium">{team.entry_name}</TableCell>
-              <TableCell className="font-medium">{team.player_name}</TableCell>
-              <TableCell>{team.totalPoints || "0"} ({managerData?.entry_history.points || "0"})</TableCell>
-              <TableCell>{team.totalBenchPoints || "0"}</TableCell>
-              <TableCell>{team.gameweeksWon || ""}</TableCell>
-              <TableCell className="text-right">
-                {managerData?.entry_history?.value
-                  ? (
-                      (managerData.entry_history.value -
-                        managerData.entry_history.bank) /
-                      10
-                    ).toFixed(1)
-                  : "0"}
-              </TableCell>
-              <TableCell className="text-right">
-                {managerData?.entry_history?.bank
-                  ? (managerData.entry_history.bank / 10).toFixed(1)
-                  : "0"}
-              </TableCell>
-              <TableCell className="text-right">
-                {managerData?.entry_history?.value
-                  ? (managerData.entry_history.value / 10).toFixed(1)
-                  : "0"}
-              </TableCell>
-              <TableCell className="text-right">
-                {team.totalTransferCost || "0"}
-              </TableCell>
-              <TableCell className="text-right">
-                {team.gameweekPrize || "0"}
-              </TableCell>
-              <TableCell className="text-right">{team.rankPrize || "0"}</TableCell>
-              <TableCell className="text-right">{team.totalPrize || "0"}</TableCell>
-              <TableCell className="text-right sm:hidden">
-                {team.player_name}
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                return (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{team.rank}</TableCell>
+                    <TableCell className="font-medium">{team.entry_name}</TableCell>
+                    <TableCell className="font-medium">{team.player_name}</TableCell>
+                    <TableCell>{team.totalPoints || "0"} ({managerData?.entry_history.points || "0"})</TableCell>
+                    <TableCell>{team.totalBenchPoints || "0"}</TableCell>
+                    <TableCell>{team.gameweeksWon || ""}</TableCell>
+                    <TableCell className="text-right">
+                      {managerData?.entry_history?.value
+                        ? (
+                            (managerData.entry_history.value -
+                              managerData.entry_history.bank) /
+                            10
+                          ).toFixed(1)
+                        : "0"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {managerData?.entry_history?.bank
+                        ? (managerData.entry_history.bank / 10).toFixed(1)
+                        : "0"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {managerData?.entry_history?.value
+                        ? (managerData.entry_history.value / 10).toFixed(1)
+                        : "0"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {team.totalTransferCost || "0"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {team.gameweekPrize || "0"}
+                    </TableCell>
+                    <TableCell className="text-right">{team.rankPrize || "0"}</TableCell>
+                    <TableCell className="text-right">{team.totalPrize || "0"}</TableCell>
+                    <TableCell className="text-right sm:hidden">
+                      {team.player_name}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+    
   );
 }

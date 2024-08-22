@@ -3,15 +3,16 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { GoalType } from './GoalType';
-import type { PrizeDistributionCreate } from './PrizeDistributionCreate';
+import type { PrizeDistributionOut } from './PrizeDistributionOut';
 import type { PrizeType } from './PrizeType';
-export type LeaguePrizeCreate = {
+export type LeaguePrizeOut = {
     total_prize: number;
     prize_type?: PrizeType;
     prize_goal?: GoalType;
     from_gw?: (number | null);
     to_gw?: (number | null);
     currency?: string;
-    distributions?: Array<PrizeDistributionCreate>;
+    id: string;
+    distributions?: Array<PrizeDistributionOut>;
 };
 

@@ -12,13 +12,17 @@ import {
 import { useGetUserLeagues } from "@/hooks/useFPLRewardLeague";
 import { LeagueOut } from "../../../../SDK/projects_api/client";
 import Link from "next/link";
+import {Card, CardTitle } from "@/components/ui/card";
+import { useGetLeagueId } from "@/hooks/useGetLeagueId";
 
 
 
 
 export function MyFPLRewardLeaguesTable() {
     const { data: fpl_leagues } = useGetUserLeagues();
+    const league_id = useGetLeagueId();
     return (
+        <Card>
         <Table>
             <TableCaption>A list of your FPL reward leagues.</TableCaption>
             <TableHeader>
@@ -31,7 +35,7 @@ export function MyFPLRewardLeaguesTable() {
                 {fpl_leagues?.map((league) => (
                     <TableRow key={league.id}>
                         <TableCell className="font-medium w-[200px] h-[20px] underline">
-                            <Link href={`/leagues/${league.external_id_fpl}`}>{league.name}
+                            <Link href={`/leagues/${league.external_id_fpl}/${league.id}`}>{league.name}
                             </Link>
                         </TableCell>
                         <TableCell>{league.description || "No description available"}</TableCell>
@@ -45,5 +49,7 @@ export function MyFPLRewardLeaguesTable() {
                 </TableRow>
             </TableFooter>
         </Table>
+        
+        </Card>
     );
 }

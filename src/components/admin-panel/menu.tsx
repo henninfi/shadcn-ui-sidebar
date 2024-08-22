@@ -15,6 +15,10 @@ import {
   TooltipContent,
   TooltipProvider
 } from "@/components/ui/tooltip";
+import { useAuthInfo, useRedirectFunctions, useLogoutFunction } from '@propelauth/react'
+
+
+
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -23,6 +27,9 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
+  const authInfo = useAuthInfo();
+  const logoutFunction = useLogoutFunction()
+  const { redirectToLoginPage, redirectToSignupPage, redirectToAccountPage } = useRedirectFunctions()
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -103,12 +110,13 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
+          {authInfo.isLoggedIn && (
           <li className="w-full grow flex items-end">
             <TooltipProvider disableHoverableContent>
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={() => {logoutFunction(true)}}
                     variant="outline"
                     className="w-full justify-center h-10 mt-5"
                   >
@@ -131,6 +139,7 @@ export function Menu({ isOpen }: MenuProps) {
               </Tooltip>
             </TooltipProvider>
           </li>
+          )}
         </ul>
       </nav>
     </ScrollArea>
