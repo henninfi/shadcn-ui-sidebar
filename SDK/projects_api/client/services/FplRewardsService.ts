@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { LeagueCreate } from '../models/LeagueCreate';
+import type { LeagueJoin } from '../models/LeagueJoin';
 import type { LeagueOut } from '../models/LeagueOut';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -32,6 +33,26 @@ export class FplRewardsService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Join League
+     * @returns LeagueOut Successful Response
+     * @throws ApiError
+     */
+    public static joinLeague({
+        requestBody,
+    }: {
+        requestBody: LeagueJoin,
+    }): CancelablePromise<LeagueOut> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/join',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

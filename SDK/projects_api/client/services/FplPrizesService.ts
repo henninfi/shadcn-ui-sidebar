@@ -54,4 +54,56 @@ export class FplPrizesService {
             },
         });
     }
+    /**
+     * Update Prize
+     * @returns LeaguePrizeOut Successful Response
+     * @throws ApiError
+     */
+    public static updatePrize({
+        leagueId,
+        prizeId,
+        requestBody,
+    }: {
+        leagueId: string,
+        prizeId: string,
+        requestBody: LeaguePrizeCreate,
+    }): CancelablePromise<LeaguePrizeOut> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/league/{league_id}/prize/{prize_id}',
+            path: {
+                'league_id': leagueId,
+                'prize_id': prizeId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Delete Prize
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static deletePrize({
+        leagueId,
+        prizeId,
+    }: {
+        leagueId: string,
+        prizeId: string,
+    }): CancelablePromise<Record<string, string>> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/league/{league_id}/prize/{prize_id}',
+            path: {
+                'league_id': leagueId,
+                'prize_id': prizeId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
 }

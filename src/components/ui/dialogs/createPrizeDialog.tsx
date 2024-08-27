@@ -9,39 +9,82 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCreateFPLRewardPrize } from "@/hooks/useFPLPrizes";
-import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate } from "../../../../SDK/projects_api/client";
+import {
+  useCreateFPLRewardPrize,
+  useUpdateFPLRewardPrize,
+  useDeleteFPLRewardPrize,
+} from "@/hooks/useFPLPrizes";
+import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate, LeaguePrizeOut } from "../../../../SDK/projects_api/client";
 import { useGetLeagueId } from "@/hooks/useGetLeagueId";
+import { Trash } from "lucide-react";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 interface CreatePrizeDialogProps {
   open: boolean;
   onClose: () => void;
   onCreate: () => void;
+  selectedPrize: LeaguePrizeOut | null;  // for updating an existing prize
 }
 
 export default function CreatePrizeDialog({
   open,
   onClose,
   onCreate,
+  selectedPrize,
 }: CreatePrizeDialogProps) {
   const leagueId = useGetLeagueId();
+
+  // Initial states
   const [totalPrize, setTotalPrize] = useState<number | null>(null);
   const [prizeType, setPrizeType] = useState<PrizeType>("total_points");
   const [fromGw, setFromGw] = useState<number | null>(null);
   const [toGw, setToGw] = useState<number | null>(null);
   const [currency, setCurrency] = useState<string>("USD");
   const [distributions, setDistributions] = useState<PrizeDistributionCreate[]>([
-    { rank: 1, percentage: 100 }, // Ensure percentage is always initialized
+    { rank: 1, percentage: 100 },
   ]);
   const [isPercentageValid, setIsPercentageValid] = useState<boolean>(true);
+  const [isValid, setIsValid] = useState<boolean>(false);
+  const [isSelectedId, setIsSelectedId] = useState<string | null>(null);
 
+  // Hooks for creating, updating, and deleting prizes
   const createLeaguePrize = useCreateFPLRewardPrize(leagueId);
+  const updateLeaguePrize = useUpdateFPLRewardPrize(leagueId, isSelectedId as string);
+  const deleteLeaguePrize = useDeleteFPLRewardPrize(leagueId, isSelectedId as string);
+
+  console.log('selectedPrize.id', isSelectedId)
   const prizePerGameweek =
     prizeType === "gw_points" && totalPrize && toGw && fromGw
       ? totalPrize / (toGw - fromGw + 1)
       : "";
 
-  const [isValid, setIsValid] = useState<boolean>(false);
+  // Update state when editing an existing prize
+  useEffect(() => {
+    if (selectedPrize) {
+      setIsSelectedId(selectedPrize.id);
+      setTotalPrize(selectedPrize.total_prize);
+      setPrizeType(selectedPrize.prize_type as PrizeType);
+      setFromGw(selectedPrize.from_gw as number);
+      setToGw(selectedPrize.to_gw as number);
+      setCurrency(selectedPrize.currency as string);
+      setDistributions(selectedPrize.distributions as PrizeDistributionCreate[]);
+    } else {
+      // Reset state for creating a new prize
+      setTotalPrize(null);
+      setPrizeType("total_points");
+      setFromGw(null);
+      setToGw(null);
+      setCurrency("USD");
+      setDistributions([{ rank: 1, percentage: 100 }]);
+    }
+  }, [selectedPrize]);
+
+  useEffect(() => {
+    if (prizeType === "cup") {
+      setFromGw(38);
+      setToGw(38);
+    }
+  }, [prizeType]);
 
   useEffect(() => {
     const totalPercentage = distributions.reduce(
@@ -50,42 +93,49 @@ export default function CreatePrizeDialog({
     );
     setIsPercentageValid(totalPercentage === 100);
 
-    if (
-      totalPrize &&
-      fromGw &&
-      toGw &&
+    setIsValid(
+      totalPrize !== null &&
+      fromGw !== null &&
+      toGw !== null &&
       fromGw >= 1 &&
       fromGw <= 38 &&
       toGw >= fromGw &&
       toGw <= 38 &&
       isPercentageValid
-    ) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
+    );
   }, [totalPrize, fromGw, toGw, distributions, isPercentageValid]);
 
-  const handleCreatePrize = () => {
-    if (!isValid) {
-      return;
-    }
+  const handleSavePrize = () => {
+    if (!isValid) return;
 
     const newPrize: LeaguePrizeCreate = {
-      total_prize: totalPrize ? totalPrize : 0,
+      total_prize: totalPrize ?? 0,
       prize_type: prizeType,
       prize_goal: "points",
       from_gw: fromGw!,
       to_gw: toGw!,
       currency: currency,
-      distributions: distributions.map(d => ({
+      distributions: distributions.map((d) => ({
         rank: d.rank,
-        percentage: d.percentage ?? 0, // Ensure percentage is always present
-      }))
+        percentage: d.percentage ?? 0,
+      })),
     };
 
-    createLeaguePrize.mutate(newPrize);
+    if (selectedPrize) {
+      updateLeaguePrize.mutate(newPrize);
+    } else {
+      createLeaguePrize.mutate(newPrize);
+    }
+
     onClose();
+    onCreate();
+  };
+
+  const handleDeletePrize = () => {
+    if (selectedPrize) {
+      deleteLeaguePrize.mutate();
+      deleteLeaguePrize.isSuccess && onClose();
+    }
   };
 
   const handleDistributionChange = (
@@ -99,7 +149,11 @@ export default function CreatePrizeDialog({
   };
 
   const handleAddDistribution = () => {
-    setDistributions([...distributions, { rank: distributions.length + 1, percentage: 0 }]);
+    if (prizeType === "cup" && distributions.length >= 2) return;
+    setDistributions([
+      ...distributions,
+      { rank: distributions.length + 1, percentage: 0 },
+    ]);
   };
 
   const handleRemoveDistribution = (index: number) => {
@@ -113,10 +167,13 @@ export default function CreatePrizeDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="overflow-y-scroll max-w-screen max-h-screen w-[400px] sm:max-w-[1000px]">
         <DialogHeader>
-          <DialogTitle>Create a New Prize</DialogTitle>
+          <DialogTitle>
+            {selectedPrize ? "Edit Prize" : "Create a New Prize"}
+          </DialogTitle>
           <DialogDescription>
-            Fill in the details to create a new prize for the league.
+            {selectedPrize ? "Update the details of the prize." : "Fill in the details to create a new prize for the league."}
           </DialogDescription>
+
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -155,31 +212,34 @@ export default function CreatePrizeDialog({
             value={totalPrize ? totalPrize.toString() : ""}
             onChange={(e) => setTotalPrize(parseFloat(e.target.value))}
           />
-          {prizeType === "gw_points" && totalPrize != 0 && (
+          {prizeType === "gw_points" && totalPrize !== null && (
             <div className="text-xs">
               Total prize amount divided by the number of gameweeks gives the
               prize per gameweek.
             </div>
           )}
-
           <Input
             type="text"
             placeholder="Currency"
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
           />
-          <Input
-            type="number"
-            placeholder="From Gameweek"
-            value={fromGw ?? ""}
-            onChange={(e) => setFromGw(parseInt(e.target.value, 10))}
-          />
-          <Input
-            type="number"
-            placeholder="To Gameweek"
-            value={toGw ?? ""}
-            onChange={(e) => setToGw(parseInt(e.target.value, 10))}
-          />
+          {prizeType !== "cup" && (
+            <>
+              <Input
+                type="number"
+                placeholder="From Gameweek"
+                value={fromGw ?? ""}
+                onChange={(e) => setFromGw(parseInt(e.target.value, 10))}
+              />
+              <Input
+                type="number"
+                placeholder="To Gameweek"
+                value={toGw ?? ""}
+                onChange={(e) => setToGw(parseInt(e.target.value, 10))}
+              />
+            </>
+          )}
           {prizePerGameweek !== "" && (
             <p className="text-xs">Prize per Gameweek: {prizePerGameweek}</p>
           )}
@@ -223,7 +283,7 @@ export default function CreatePrizeDialog({
                   />
                   <span className="text-xs text-gray-500">Percent</span>
                 </div>
-               
+
                 {distributions.length > 1 && (
                   <Button
                     onClick={() => handleRemoveDistribution(index)}
@@ -233,20 +293,23 @@ export default function CreatePrizeDialog({
                     Remove
                   </Button>
                 )}
-                 <div className="w-1/2">
+                <div className="w-1/2">
                   <p className="text-xs mb-6">
-                    Prize: {totalPrize ? (totalPrize * (distribution.percentage ?? 0)) / 100 : 0} {currency}
+                    Prize: {totalPrize ? (totalPrize * (distribution.percentage ?? 0)) / 100 : 0}{" "}
+                    {currency}
                   </p>
                 </div>
               </div>
             ))}
-            <Button
-              onClick={handleAddDistribution}
-              variant="secondary"
-              className="mt-2"
-            >
-              + Add Distribution
-            </Button>
+            {(prizeType !== "cup" || distributions.length < 2) && (
+              <Button
+                onClick={handleAddDistribution}
+                variant="secondary"
+                className="mt-2"
+              >
+                + Add Distribution
+              </Button>
+            )}
             {!isPercentageValid && (
               <p className="text-red-500 text-xs">
                 Distribution percentage must sum up to exactly 100%.
@@ -254,9 +317,21 @@ export default function CreatePrizeDialog({
             )}
           </div>
         </div>
+        
         <DialogFooter>
-          <Button onClick={handleCreatePrize} disabled={!isValid}>
-            Create Prize
+          {selectedPrize && (
+            <div className="flex justify-between w-full">
+              <Button
+                variant="destructive"
+                className="w-8 p-0 bg-red-800"
+                onClick={handleDeletePrize}
+              >
+                <Trash className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          <Button onClick={handleSavePrize} disabled={!isValid}>
+            {selectedPrize ? "Update Prize" : "Create Prize"}
           </Button>
         </DialogFooter>
       </DialogContent>

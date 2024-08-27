@@ -7,7 +7,9 @@ export const useGetLeaguePrizes = (leagueId: string) => {
     return useQuery({
         queryKey: ["fpl_reward_prizes", leagueId],
         queryFn: () => FplPrizesService.getPrizes({leagueId}),
+        enabled: !!leagueId,
     });
+    
 };
 
 // Hook to create a new prize
@@ -22,3 +24,32 @@ export const useCreateFPLRewardPrize = (leagueId:string) => {
         },
     });
 };
+
+
+export const useUpdateFPLRewardPrize = (leagueId: string, prizeId: string) => {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: async (requestBody: LeaguePrizeCreate) => {
+        console.log(leagueId, prizeId, requestBody);
+        return await FplPrizesService.updatePrize({ leagueId, prizeId, requestBody });
+      },
+      onSuccess: (updatedPrize: LeaguePrizeOut) => {
+        queryClient.invalidateQueries({ queryKey: ["fpl_reward_prizes", leagueId] });
+      },
+      
+    });
+  };
+
+  export const useDeleteFPLRewardPrize = (leagueId: string, prizeId: string) => {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: async () => {
+        return await FplPrizesService.deletePrize({ leagueId, prizeId });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["fpl_reward_prizes", leagueId] });
+      },
+    });
+  };

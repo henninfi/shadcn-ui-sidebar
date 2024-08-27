@@ -15,6 +15,7 @@ export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { League } from './models/League';
 export type { LeagueCreate } from './models/LeagueCreate';
 export type { LeagueData } from './models/LeagueData';
+export type { LeagueJoin } from './models/LeagueJoin';
 export type { LeagueOut } from './models/LeagueOut';
 export type { LeaguePrizeCreate } from './models/LeaguePrizeCreate';
 export type { LeaguePrizeOut } from './models/LeaguePrizeOut';

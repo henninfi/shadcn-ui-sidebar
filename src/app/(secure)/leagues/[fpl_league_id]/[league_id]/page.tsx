@@ -18,105 +18,85 @@ import { FantasyTable } from "@/components/ui/tables/currentStandingTable";
 import CreatePrizeDialog from "@/components/ui/dialogs/createPrizeDialog";
 import { useGetLeaguePrizes } from "@/hooks/useFPLPrizes";
 import { useGetLeagueId } from "@/hooks/useGetLeagueId";
+import { Separator } from "@/components/ui/separator"
+import PrizeCard from "@/components/ui/cards/prizesCard";
+import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate, LeaguePrizeOut } from "../../../../../../SDK/projects_api/client";
+
+
 
 
 export default function DashboardPage() {
   const [openCreatePrizeModal, setOpenCreatePrizeModal] = useState(false);
   const leagueId = useGetLeagueId();
-  const {data:prizes} = useGetLeaguePrizes(leagueId);
+  const { data: prizes } = useGetLeaguePrizes(leagueId);
+  const [prize, setPrize] = useState<LeaguePrizeOut | null>(null);
 
 
 
   return (
     <ContentLayout title="My League">
       {/* Dialogs */}
-      <CreatePrizeDialog open={openCreatePrizeModal} onClose={() => setOpenCreatePrizeModal(false)} onCreate={() => setOpenCreatePrizeModal(false)} />
-      
-      
-      <div className="grid grid-cols-3 gap-4">
+      <CreatePrizeDialog open={openCreatePrizeModal} onClose={() => (setOpenCreatePrizeModal(false), setPrize(null))} onCreate={() => setOpenCreatePrizeModal(false)} selectedPrize={prize} />
+      <div className="grid sm:grid-cols-3 grid-cols-1 gap-4">
         <div>
           <Card>
-            <CardTitle className="m-4">League Info </CardTitle>
+            <CardTitle className="ml-4 mt-2 h-[40px] flex items-center justify-between">League Info </CardTitle>
             <CardContent>
-
+              {/* Add league info content here */}
             </CardContent>
             <CardFooter className="text-xs text-gray-500">
-              Summary of FPL Reward League
+              Summary of FPL Reward League.
             </CardFooter>
           </Card>
         </div>
-        <div>
-        <Card>
-      <CardTitle className="m-4 flex items-center justify-between">
-        Prizes
-        <Button
-          variant="default"
-          className="ml-auto"
-          onClick={() => setOpenCreatePrizeModal(true)}
-        >
-          New Prize
-        </Button>
-      </CardTitle>
 
-      <CardContent>
-        {prizes?.length === 0 ? (
-          <p>No prizes available.</p>
-        ) : (
-          <ul className="space-y-4">
-            {prizes?.map((prize) => (
-              <li key={prize.id} className="border p-4 rounded-md">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">{(prize.prize_type as string) === "total_points" ? "Total Points" : "test"}</h3>
-                    <p className="text-sm text-gray-500">
-                      {`From Gameweek ${prize.from_gw} to ${prize.to_gw}`}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">
-                      {prize.total_prize} {prize.currency}
-                    </p>
-                  </div>
-                </div>
-                {prize.distributions && prize.distributions.length > 0 && (
-                  <div className="mt-2 space-y-2">
-                    {prize.distributions.map((distribution) => (
-                      <div key={distribution.id} className="flex justify-between text-sm">
-                        <p>Rank {distribution.rank}</p>
-                        <p>{distribution.percentage}%</p>
-                        <p>{(((distribution.percentage as number) / 100) * prize.total_prize).toFixed(2)} {prize.currency}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </CardContent>
-
-      <CardFooter className="text-xs text-gray-500">
-        What's in it for you?
-      </CardFooter>
-    </Card>
-
-        </div>
         <div>
           <Card>
-            <CardTitle className="m-4">Rules </CardTitle>
+            <CardTitle className="ml-4 mt-2 h-[40px] flex items-center justify-between">Rules </CardTitle>
             <CardContent>
-
+              {/* Add rules content here */}
             </CardContent>
             <CardFooter className="text-xs text-gray-500">
               I'd be following these.
             </CardFooter>
           </Card>
         </div>
-        <div className="col-span-3">
-          <Card className="p-2">
-            <FantasyTable />
-          </Card>
-        </div>
+
+        <Card>
+          <CardTitle className="ml-4 mt-2 mr-2 h-[40px] flex items-center justify-between">
+            Prizes
+            <Button
+              variant="default"
+              className="ml-auto"
+              onClick={() => setOpenCreatePrizeModal(true)}
+            >
+              New Prize
+            </Button>
+          </CardTitle>
+
+          <CardContent>
+            {/* Prizes content */}
+          </CardContent>
+
+          <CardFooter className="text-xs text-gray-500">
+            What's in it for you?
+          </CardFooter>
+        </Card>
+      </div>
+      <Separator className="m-4" />
+
+
+      {/* New row for displaying prize cards */}
+      <div className="grid sm:grid-cols-3 grid-cols-1 gap-4">
+        {prizes?.map((prize) => (
+          <PrizeCard key={prize.id} prize={prize} setPrize={setPrize} setOpenCreatePrizeModal={setOpenCreatePrizeModal} />  // Use PrizeCard component
+        ))}
+      </div>
+      <Separator className="m-4" />
+      <div className="col-span-3">
+        <Card className="p-2">
+          <FantasyTable />
+        </Card>
       </div>
     </ContentLayout>
   );
