@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { QueryClientComponent } from "@/components/queryclient/QueryClientComponent";
-import AuthTokenUpdater from "@/components/auth/TokenUpdater";
 import AuthComponent from "@/components/auth/AuthComponent";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {SDKConfig} from "@/components/sdk-config/config";
@@ -55,7 +54,6 @@ export default function RootLayout({
           <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientComponent>
         </ThemeProvider>
-        <AuthTokenUpdater />
         <SDKConfig />
       </body>
       </AuthComponent>

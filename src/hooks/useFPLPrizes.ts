@@ -1,6 +1,5 @@
 // src/hooks/useFPLRewardPrizes.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FplPrizesService, LeaguePrizeOut, LeaguePrizeCreate } from "../../SDK/projects_api/client";
 import { fplPrizesGetPrizesOptions, fplPrizesCreatePrizesMutation, fplPrizesUpdatePrizeMutation, fplPrizesDeletePrizeMutation, fplPrizesCreatePrizesQueryKey, fplPrizesCreatePrizesOptions } from "@/client/@tanstack/react-query.gen";
 
 export const useGetLeaguePrizes = (leagueId: string) => {

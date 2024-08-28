@@ -1,7 +1,0 @@
-🚫 missing input - which OpenAPI specification should we use to generate your client?
-Error: 🚫 missing input - which OpenAPI specification should we use to generate your client?
-    at C:\Henning\Github-Repo\fpl_new\node_modules\@hey-api\openapi-ts\dist\node\index.cjs:1:183143
-    at Array.map (<anonymous>)
-    at Vs (C:\Henning\Github-Repo\fpl_new\node_modules\@hey-api\openapi-ts\dist\node\index.cjs:1:182829)
-    at async exports.createClient (C:\Henning\Github-Repo\fpl_new\node_modules\@hey-api\openapi-ts\dist\node\index.cjs:1:184609)
-    at async start (C:\Henning\Github-Repo\fpl_new\node_modules\@hey-api\openapi-ts\bin\index.cjs:80:5)

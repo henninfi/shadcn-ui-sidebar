@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { LeaguePrizeOut } from "../../../../SDK/projects_api/client";
+import { LeaguePrizeOut } from "@/client/types.gen";
 import { Edit } from "lucide-react"; // Import the Edit icon from lucide-react
 
 interface PrizeCardProps {

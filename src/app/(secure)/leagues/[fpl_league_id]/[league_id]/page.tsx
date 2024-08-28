@@ -20,7 +20,7 @@ import { useGetLeaguePrizes } from "@/hooks/useFPLPrizes";
 import { useGetLeagueId } from "@/hooks/useGetLeagueId";
 import { Separator } from "@/components/ui/separator"
 import PrizeCard from "@/components/ui/cards/prizesCard";
-import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate, LeaguePrizeOut } from "../../../../../../SDK/projects_api/client";
+import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate, LeaguePrizeOut } from "@/client/types.gen";
 
 
 

@@ -14,7 +14,7 @@ import {
   useUpdateFPLRewardPrize,
   useDeleteFPLRewardPrize,
 } from "@/hooks/useFPLPrizes";
-import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate, LeaguePrizeOut } from "../../../../SDK/projects_api/client";
+import { LeaguePrizeCreate, PrizeType, PrizeDistributionCreate, LeaguePrizeOut } from "@/client/types.gen";
 import { useGetLeagueId } from "@/hooks/useGetLeagueId";
 import { Trash } from "lucide-react";
 import { Separator } from "@radix-ui/react-dropdown-menu";

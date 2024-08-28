@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useGetClassicLeagueStandings } from "@/hooks/useGetClassicLeagueStanding";
 import { useCreateFPLRewardLeague } from "@/hooks/useFPLRewardLeague";
-import type { LeagueData } from "@/client/types.gen"
-import { LeagueCreate } from "../../../../SDK/projects_api/client";
+import type { LeagueData, LeagueCreate } from "@/client/types.gen"
 
 
 
