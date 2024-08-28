@@ -57,7 +57,7 @@ export default function DashboardPage() {
               {/* Add rules content here */}
             </CardContent>
             <CardFooter className="text-xs text-gray-500">
-              I'd be following these.
+              Ment to be followed.
             </CardFooter>
           </Card>
         </div>
@@ -79,7 +79,7 @@ export default function DashboardPage() {
           </CardContent>
 
           <CardFooter className="text-xs text-gray-500">
-            What's in it for you?
+            What to win.
           </CardFooter>
         </Card>
       </div>

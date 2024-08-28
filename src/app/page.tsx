@@ -6,7 +6,7 @@ import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { useRedirectFunctions } from '@propelauth/react'
+import { useRedirectFunctions } from "@propelauth/react";
 
     
 
@@ -42,7 +42,7 @@ export default function HomePage() {
               Track Your Fantasy Premier League Rewards
             </h1>
             <span className="max-w-[750px] text-center text-lg font-light text-foreground">
-              Stay updated with your earnings throughout the season. Discover how much you've earned in weekly and top 3 prizes, and see how the rewards stack up for all participants in your league.
+              Stay updated with your earnings throughout the season. Discover how much you&apos;ve earned in weekly and top 3 prizes, and see how the rewards stack up for all participants in your league.
             </span>
             <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-6">
               <Button variant="outline" asChild>

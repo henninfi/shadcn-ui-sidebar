@@ -29,7 +29,6 @@ type Group = {
 };
 
 export function getMenuList(pathname: string): Group[] {
-  const leagueId = useGetLeagueId();
   return [
     {
       groupLabel: "",
