@@ -48,11 +48,10 @@ export default function CreatePrizeDialog({
   const [isSelectedId, setIsSelectedId] = useState<string | null>(null);
 
   // Hooks for creating, updating, and deleting prizes
-  const createLeaguePrize = useCreateFPLRewardPrize(leagueId);
-  const updateLeaguePrize = useUpdateFPLRewardPrize(leagueId, isSelectedId as string);
-  const deleteLeaguePrize = useDeleteFPLRewardPrize(leagueId, isSelectedId as string);
+  const createLeaguePrize = useCreateFPLRewardPrize();
+  const updateLeaguePrize = useUpdateFPLRewardPrize();
+  const deleteLeaguePrize = useDeleteFPLRewardPrize();
 
-  console.log('selectedPrize.id', isSelectedId)
   const prizePerGameweek =
     prizeType === "gw_points" && totalPrize && toGw && fromGw
       ? totalPrize / (toGw - fromGw + 1)
@@ -122,9 +121,18 @@ export default function CreatePrizeDialog({
     };
 
     if (selectedPrize) {
-      updateLeaguePrize.mutate(newPrize);
+      updateLeaguePrize.mutate({
+        path: {
+          league_id: leagueId,
+          prize_id: isSelectedId as string
+        },
+        body: newPrize as LeaguePrizeCreate,
+      });
     } else {
-      createLeaguePrize.mutate(newPrize);
+      createLeaguePrize.mutate({
+        path: { league_id: leagueId },
+        body: newPrize as LeaguePrizeCreate,
+      });
     }
 
     onClose();
@@ -133,7 +141,14 @@ export default function CreatePrizeDialog({
 
   const handleDeletePrize = () => {
     if (selectedPrize) {
-      deleteLeaguePrize.mutate();
+      deleteLeaguePrize.mutate(
+        {
+          path: {
+            league_id: leagueId,
+            prize_id: isSelectedId as string
+          },
+        }
+      );
       deleteLeaguePrize.isSuccess && onClose();
     }
   };
@@ -317,7 +332,7 @@ export default function CreatePrizeDialog({
             )}
           </div>
         </div>
-        
+
         <DialogFooter>
           {selectedPrize && (
             <div className="flex justify-between w-full">

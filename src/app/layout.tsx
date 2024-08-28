@@ -4,6 +4,7 @@ import { QueryClientComponent } from "@/components/queryclient/QueryClientCompon
 import AuthTokenUpdater from "@/components/auth/TokenUpdater";
 import AuthComponent from "@/components/auth/AuthComponent";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import {SDKConfig} from "@/components/sdk-config/config";
 
 import "./globals.css";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
           </QueryClientComponent>
         </ThemeProvider>
         <AuthTokenUpdater />
+        <SDKConfig />
       </body>
       </AuthComponent>
     </html>

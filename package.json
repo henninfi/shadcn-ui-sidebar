@@ -10,7 +10,8 @@
     "download-openapi": "curl http://127.0.0.1:8000/openapi.json -o openapi.json",
     "modify-openapi": "node modify-openapi.js",
     "generate-client-core": "openapi --input ./node_modules/@apidevtools/json-schema-ref-parser/dist/openapi.json --output ./SDK/projects_api/client --client axios --useOptions --useUnionTypes",
-    "generate-client": "npm run download-openapi && npm run modify-openapi && npm run generate-client-core"
+    "generate-client": "npm run download-openapi && npm run modify-openapi && npm run generate-client-core",
+    "openapi-ts": "openapi-ts"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.7.0",

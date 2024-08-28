@@ -16,9 +16,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetClassicLeagueStandings } from "@/hooks/useGetClassicLeagueStanding";
-import { useGetGameweekPerManagerPerClassicLeague, useGetGameweeksPerManagerPerClassicLeagueQueries } from "@/hooks/useGetGameweekPerManager";
+import { useGetGameweeksPerManagerPerClassicLeagueQueries } from "@/hooks/useGetGameweekPerManager";
 import { useGetFPLLeagueId, useGetLeagueId } from "@/hooks/useGetLeagueId";
-import { Standings, Standing, TeamData, LeaguePrizeOut, Event } from "../../../../SDK/projects_api/client";
+import type { Standings, Standing, TeamData, LeaguePrizeOut,Event } from "@/client/types.gen";
 import { useGetGameweekOverallInfo } from "@/hooks/useGetGameweekOverallInfo";
 import { useGetLeaguePrizes } from "@/hooks/useFPLPrizes";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
@@ -56,7 +56,6 @@ function distributePrizes(
     });
 
     deltas.sort((a, b) => b.deltaPoints - a.deltaPoints);
-    console.log(deltas);
     deltas.forEach((delta, index) => {
       const distribution = prize.distributions?.find(
         (dist) => dist.rank === index + 1
@@ -77,9 +76,10 @@ export function FantasyTable() {
   const fplLeagueId = useGetFPLLeagueId();
   const leagueId = useGetLeagueId();
 
+
   const { data: prizes, isSuccess: prizesIsSuccess } = useGetLeaguePrizes(leagueId);
   const { data: fplGameweekOverallInfo } = useGetGameweekOverallInfo();
-  const { data: fplClassicLeagueStanding } = useGetClassicLeagueStandings(fplLeagueId);
+  const { data: fplClassicLeagueStanding } = useGetClassicLeagueStandings(fplLeagueId ? fplLeagueId : "314");
 
   const lastEventId =
     fplGameweekOverallInfo && fplGameweekOverallInfo.length > 0

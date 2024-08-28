@@ -10,17 +10,14 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { useGetUserLeagues } from "@/hooks/useFPLRewardLeague";
-import { LeagueOut } from "../../../../SDK/projects_api/client";
 import Link from "next/link";
 import {Card, CardTitle } from "@/components/ui/card";
-import { useGetLeagueId } from "@/hooks/useGetLeagueId";
 
 
 
 
 export function MyFPLRewardLeaguesTable() {
     const { data: fpl_leagues } = useGetUserLeagues();
-    const league_id = useGetLeagueId();
     return (
         <Card>
         <Table>

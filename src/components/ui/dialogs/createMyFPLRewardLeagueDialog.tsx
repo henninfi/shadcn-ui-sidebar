@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useGetClassicLeagueStandings } from "@/hooks/useGetClassicLeagueStanding";
 import { useCreateFPLRewardLeague } from "@/hooks/useFPLRewardLeague";
-import type { LeagueData } from "../../../../SDK/projects_api/client";
+import type { LeagueData } from "@/client/types.gen"
 import { LeagueCreate } from "../../../../SDK/projects_api/client";
+
 
 
 interface LinkNewFPLeagueDialogProps {
@@ -27,7 +28,6 @@ export default function LinkNewFPLeagueDialog({ open, onClose, onCreate }: LinkN
     try {
       setLeagueData(fplClassicLeagueStanding ? fplClassicLeagueStanding : null);
       setError(leagueData === null ? null : "League not found or an error occurred.");
-      console.log(leagueData);
     } catch (err) {
       setError("League not found or an error occurred.");
       setLeagueData(null);
@@ -43,8 +43,9 @@ export default function LinkNewFPLeagueDialog({ open, onClose, onCreate }: LinkN
 
 
     }
-    createFPLRewardLeague.mutate(newLeague as LeagueCreate);
-    console.log(newLeague);
+    createFPLRewardLeague.mutate({
+      body: newLeague as LeagueCreate
+    });
     onClose();
   };
 

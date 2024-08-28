@@ -3,8 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useJoinFPLRewardLeague } from "@/hooks/useFPLRewardLeague";
-import type { LeagueData } from "../../../../SDK/projects_api/client";
-import { LeagueJoin } from "../../../../SDK/projects_api/client";
+import type { LeagueJoin } from "@/client/types.gen"
 import { Loader2 } from "lucide-react"
 
 interface JoinFPLeagueDialogProps {
@@ -27,7 +26,9 @@ export default function JoinFPLeagueDialog({ open, onClose, onJoin }: JoinFPLeag
 
     try {
       const leagueJoinData: LeagueJoin = { join_code: joinCode };
-      await joinFPLRewardLeague.mutateAsync(leagueJoinData);
+      joinFPLRewardLeague.mutate({
+        body: leagueJoinData
+      });
       onJoin(); // Call the onJoin callback to indicate success
       onClose(); // Close the dialog
     } catch (err) {
